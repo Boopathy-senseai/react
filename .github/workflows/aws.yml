@@ -27,35 +27,7 @@
 #             cal 9 1752
 #             # Add your deployment commands here'
 
-# name: List Files in zita Directory
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   list-files:
-#     name: List Files in zita Directory
-#     runs-on: ubuntu-latest
-    
-#     steps:
-#       - uses: actions/checkout@v2
-
-#       - name: List Files in zita Directory
-#         env:
-#           PRIVATE_KEY: ${{ secrets.AWS }}
-#           HOSTNAME: ${{ secrets.AWS_HOST }}
-#           USER_NAME: ${{ secrets.AWS_USER }}
-      
-#         run: |
-#           echo "${PRIVATE_KEY}" > private_key && chmod 600 private_key
-          
-#           files=$(ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 'ls -la /var/zita')
-#           echo "Files in zita directory:"
-#           echo "$files"
-
-name: Auto Deploy to EC2
+name: List Files in zita Directory
 
 on:
   push:
@@ -63,22 +35,14 @@ on:
       - main
 
 jobs:
-  deploy:
-    name: Deploy to EC2
+  list-files:
+    name: List Files in zita Directory
     runs-on: ubuntu-latest
     
     steps:
       - uses: actions/checkout@v2
-      
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
 
-      - name: Pull from main
-        run: git pull origin main
-
-      - name: Deploy to EC2
+      - name: List Files in zita Directory
         env:
           PRIVATE_KEY: ${{ secrets.AWS }}
           HOSTNAME: ${{ secrets.AWS_HOST }}
@@ -87,11 +51,47 @@ jobs:
         run: |
           echo "${PRIVATE_KEY}" > private_key && chmod 600 private_key
           
-          scp -o StrictHostKeyChecking=no -i private_key -r . ${USER_NAME}@${HOSTNAME}:/var/www/
+          files=$(ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 'ls -la /var/zita')
+          echo "Files in zita directory:"
+          echo "$files"
 
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-            echo "Deployment completed"
-            # sudo systemctl restart apache2.service
-            # echo "Restart apache server"
+# name: Auto Deploy to EC2
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   deploy:
+#     name: Deploy to EC2
+#     runs-on: ubuntu-latest
+    
+#     steps:
+#       - uses: actions/checkout@v2
+      
+#       - name: Set up Python 3.8
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: '3.8'
+
+#       - name: Pull from main
+#         run: git pull origin main
+
+#       - name: Deploy to EC2
+#         env:
+#           PRIVATE_KEY: ${{ secrets.AWS }}
+#           HOSTNAME: ${{ secrets.AWS_HOST }}
+#           USER_NAME: ${{ secrets.AWS_USER }}
+      
+#         run: |
+#           echo "${PRIVATE_KEY}" > private_key && chmod 600 private_key
+          
+#           scp -o StrictHostKeyChecking=no -i private_key -r . ${USER_NAME}@${HOSTNAME}:/var/www/
+
+#           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+#             echo "Deployment completed"
+#             # sudo systemctl restart apache2.service
+#             # echo "Restart apache server"
             
-          '
+#          '
