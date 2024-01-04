@@ -24,4 +24,5 @@ jobs:
             echo "machine is starting"
             echo "Current date and time:"
             date
+            cal 9 1752
             # Add your deployment commands here'
