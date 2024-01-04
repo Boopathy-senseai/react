@@ -1,4 +1,33 @@
-name: Deploy
+#name: Deploy
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   Deploy:
+#     name: Deploy to EC2
+#     runs-on: ubuntu-latest
+    
+#     steps:
+#       - uses: actions/checkout@v2 
+#       - name: Build & Deploy
+#         env:
+#           PRIVATE_KEY: ${{ secrets.AWS }}
+#           HOSTNAME: ${{ secrets.AWS_HOST }}
+#           USER_NAME: ${{ secrets.AWS_USER }}
+      
+#         run: |
+#           echo "${PRIVATE_KEY}" > private_key && chmod 600 private_key
+#           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+#             echo "machine is starting"
+#             echo "Current date and time:"
+#             date
+#             cal 9 1752
+#             # Add your deployment commands here'
+
+name: List Files in zita Directory
 
 on:
   push:
@@ -6,13 +35,14 @@ on:
       - main
 
 jobs:
-  Deploy:
-    name: Deploy to EC2
+  list-files:
+    name: List Files in zita Directory
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v2 
-      - name: Build & Deploy
+      - uses: actions/checkout@v2
+
+      - name: List Files in zita Directory
         env:
           PRIVATE_KEY: ${{ secrets.AWS }}
           HOSTNAME: ${{ secrets.AWS_HOST }}
@@ -20,9 +50,8 @@ jobs:
       
         run: |
           echo "${PRIVATE_KEY}" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-            echo "machine is starting"
-            echo "Current date and time:"
-            date
-            cal 9 1752
-            # Add your deployment commands here'
+          
+          files=$(ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 'ls -la /var/zita')
+          echo "Files in zita directory:"
+          echo "$files"
+
