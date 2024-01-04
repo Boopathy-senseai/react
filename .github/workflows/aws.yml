@@ -18,6 +18,6 @@ jobs:
             AWS_USER: ${{secrets.AWS_USER}}
       
         run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+          echo "$AWS" > AWS && chmod 600 AWS
+          ssh -o StrictHostKeyChecking=no -i AWS ${AWS_USER}@${AWS_HOST} '
           echo "hello world"
